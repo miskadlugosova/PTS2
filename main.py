@@ -17,18 +17,19 @@ class Reservation(object):
     def overlapping(self, other):
         ret = (self._book == other._book and self._to >= other._from
                and self._to >= other._from)
-        str = 'do'
         if not ret:
-            str = 'do not'
-        res_overlapping_message(self._id, other._id, str)
+            res_overlapping_message(self._id, other._id, 'do not')
+        else:
+            res_overlapping_message(self._id, other._id, 'do')
         return ret
 
     def includes(self, date):
         ret = (self._from <= date <= self._to)
-        str = 'includes'
         if not ret:
-            str = 'does not include'
-        res_includes_message(self._id, str, date)
+            res_includes_message(self._id, 'does not include', date)
+        else:
+            res_includes_message(self._id, 'includes', date)
+
         return ret
 
     def identify(self, date, book, for_):
@@ -97,10 +98,10 @@ class Library(object):
 
     def check_reservation(self, user, book, date):
         res = any([res.identify(date, book, user) for res in self._reservations])
-        str = 'exists'
         if not res:
-            str = 'does not exist'
-        lib_check_reservation_message(user, book, date, str)
+            lib_check_reservation_message(user, book, date, 'does not exist')
+        else:
+            lib_check_reservation_message(user, book, date, 'exists')
         return res
 
     def change_reservation(self, user, book, date, new_user):
