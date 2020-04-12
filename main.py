@@ -21,15 +21,16 @@ class TemplateReservation:
 
     def identify(self, date, book, for_):
         if book != self._book:
-            return False
+            return (False, 'book')
         if for_ != self._for:
-            return False
+            return (False, 'for')
         if not self.includes(date):
-            return False
-        return True
+            return (False, 'date')
+        return (True, 'ok')
 
     def change_for(self, for_):
         self._for = for_
+
 
 class Reservation(TemplateReservation):
     def __init__(self, from_, to, book, for_):
@@ -52,17 +53,19 @@ class Reservation(TemplateReservation):
             str = 'does not include'
         print(F'Reservation {self._id} {str} {date}')
         return ret;
-#!
+
     def identify(self, date, book, for_):
         ret = super().identify(date, book, for_)
-        if book != self._book:
-            print(F'Reservation {self._id} reserves {self._book} not {book}.')
-        if for_ != self._for:
-            print(F'Reservation {self._id} is for {self._for} not {for_}.')
-        if not self.includes(date):
-            print(F'Reservation {self._id} is from {self._from} to {self._to} which ' +
-                  F'does not include {date}.')
-        print(F'Reservation {self._id} is valid {for_} of {book} on {date}.')
+        if not ret[0]:
+            if ret[1] == 'book':
+                print(F'Reservation {self._id} reserves {self._book} not {book}.')
+            if ret[1] == 'for':
+                print(F'Reservation {self._id} is for {self._for} not {for_}.')
+            if ret[1] == 'date':
+                print(F'Reservation {self._id} is from {self._from} to {self._to} which ' +
+                      F'does not include {date}.')
+        else:
+            print(F'Reservation {self._id} is valid {for_} of {book} on {date}.')
         return ret
 
     def change_for(self, for_):
@@ -114,11 +117,12 @@ class TemplateLibrary(object):
         relevant_reservations = [res for res in self._reservations
                                  if res.identify(date, book, user)]
         if not relevant_reservations:
-            return False
+            return (False, 'irrelevant')
         if new_user not in self._users:
-            return False
+            return (False, 'user')
         relevant_reservations[0].change_for(new_user)
-        return True
+        return (True, 'ok')
+
 
 class Library(TemplateLibrary):
     def __init__(self):
@@ -126,52 +130,51 @@ class Library(TemplateLibrary):
         print(F'Library created.')
 
     def add_user(self, name):
-        res = super().add_user(name)
-        if not res:
+        ret = super().add_user(name)
+        if not ret:
             print(F'User not created, user with name {name} already exists.')
         else:
             print(F'User {name} created.')
-        return res
+        return ret
 
     def add_book(self, name):
         super().add_book(name)
         print(F'Book {name} added. We have {self._books[name]} coppies of the book.')
 
     def reserve_book(self, user, book, date_from, date_to):
-        res = super().reserve_book(user, book, date_from, date_to)
-        if not res[0]:
-            if (res[1] == 'user'):
+        ret = super().reserve_book(user, book, date_from, date_to)
+        if not ret[0]:
+            if ret[1] == 'user':
                 print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
                       F'User does not exist.')
-            elif (res[1] == 'date'):
+            elif ret[1] == 'date':
                 print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
                       F'Incorrect dates.')
-            elif (res[1] == 'book'):
+            elif ret[1] == 'book':
                 print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
                       F'We do not have that book.')
-            elif (res[1] == 'quantity'):
+            elif ret[1] == 'quantity':
                 print(F'We cannot reserve book {book} for {user} from {date_from} ' +
                       F'to {date_to}. We do not have enough books.')
         else:
-            print(F'Reservation {res[1].__id} included.')
-        return res[0]
+            print(F'Reservation {ret[1].__id} included.')
+        return ret[0]
 
     def check_reservation(self, user, book, date):
-        res = super().check_reservation(user, book, date)
+        ret = super().check_reservation(user, book, date)
         str = 'exists'
-        if not res:
+        if not ret:
             str = 'does not exist'
         print(F'Reservation for {user} of {book} on {date} {str}.')
-        return res
-#!
+        return ret
+
     def change_reservation(self, user, book, date, new_user):
-        res = super().change_reservation(user, book, date, new_user)
-        relevant_reservations = [res for res in self._reservations
-                                 if res.identify(date, book, user)]
-        if not relevant_reservations:
-            print(F'Reservation for {user} of {book} on {date} does not exist.')
-        if new_user not in self._users:
-            print(F'Cannot change the reservation as {new_user} does not exist.')
-        print(F'Reservation for {user} of {book} on {date} changed to {new_user}.')
-        relevant_reservations[0].change_for(new_user)
-        return res
+        ret = super().change_reservation(user, book, date, new_user)
+        if not ret[0]:
+            if ret[1]=='irrelevant':
+                print(F'Reservation for {user} of {book} on {date} does not exist.')
+            if ret[1] == 'user':
+                print(F'Cannot change the reservation as {new_user} does not exist.')
+        else:
+            print(F'Reservation for {user} of {book} on {date} changed to {new_user}.')
+        return ret
