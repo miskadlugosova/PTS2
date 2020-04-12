@@ -1,7 +1,7 @@
 from itertools import count
 
 class MyPrinter(object):
-    def my_printer(self, string):
+    def my_print(self, string):
         print(string)
 
 class TemplateReservation(object):
@@ -17,7 +17,7 @@ class TemplateReservation(object):
 
     def overlapping(self, other):
         return (self._book == other._book and self._to >= other._from
-                and self._to >= other._from)
+                and self._from <= other._to)
 
     def includes(self, date):
         return (self._from <= date <= self._to)
@@ -39,15 +39,16 @@ class Reservation(TemplateReservation):
     def __init__(self, from_, to, book, for_, printer = MyPrinter):
         super().__init__(from_, to, book, for_)
         self.printer = printer
-        print(F'Created a reservation with id {self._id} of {self._book} ' +
-              F'from {self._from} to {self._to} for {self._for}.')
+        string = F'Created a reservation with id {self._id} of {self._book} from {self._from} to {self._to} for {self._for}.'
+        self.printer.my_print(string)
 
     def overlapping(self, other):
         ret = super().overlapping(other)
         str = 'do'
         if not ret:
             str = 'do not'
-        print(F'Reservations {self._id} and {other._id} {str} overlap')
+        string = F'Reservations {self._id} and {other._id} {str} overlap'
+        self.printer.my_print(string)
         return ret
 
     def includes(self, date):
@@ -56,25 +57,27 @@ class Reservation(TemplateReservation):
         if not ret:
             str = 'does not include'
         print(F'Reservation {self._id} {str} {date}')
-        return ret;
+        self.printer.my_print(string)
+        return ret
 
     def identify(self, date, book, for_):
         ret = super().identify(date, book, for_)
         if not ret[0]:
             if ret[1] == 'book':
-                print(F'Reservation {self._id} reserves {self._book} not {book}.')
+                sring = F'Reservation {self._id} reserves {self._book} not {book}.'
             if ret[1] == 'for':
-                print(F'Reservation {self._id} is for {self._for} not {for_}.')
+                string = F'Reservation {self._id} is for {self._for} not {for_}.'
             if ret[1] == 'date':
-                print(F'Reservation {self._id} is from {self._from} to {self._to} which ' +
-                      F'does not include {date}.')
+                string = F'Reservation {self._id} is from {self._from} to {self._to} which does not include {date}.'
         else:
-            print(F'Reservation {self._id} is valid {for_} of {book} on {date}.')
+            string = (F'Reservation {self._id} is valid {for_} of {book} on {date}.')
+        self.printer.my_print(string)
         return ret[0]
 
     def change_for(self, for_):
         super().change_for(for_)
-        print(F'Reservation {self._id} moved from {self._for} to {for_}')
+        string = F'Reservation {self._id} moved from {self._for} to {for_}'
+        self.printer.my_print(string)
 
 
 class TemplateLibrary(object):
@@ -132,37 +135,37 @@ class Library(TemplateLibrary):
     def __init__(self, printer = MyPrinter):
         super().__init__()
         self.printer = printer
-        print(F'Library created.')
+        string = F'Library created.'
+        self.printer.my_print(string)
 
     def add_user(self, name):
         ret = super().add_user(name)
         if not ret:
-            print(F'User not created, user with name {name} already exists.')
+            string = F'User not created, user with name {name} already exists.'
         else:
-            print(F'User {name} created.')
+            string = F'User {name} created.'
+        self.printer.my_print(string)
         return ret
 
     def add_book(self, name):
         super().add_book(name)
-        print(F'Book {name} added. We have {self._books[name]} coppies of the book.')
+        string = F'Book {name} added. We have {self._books[name]} coppies of the book.'
+        self.printer.my_print(string)
 
     def reserve_book(self, user, book, date_from, date_to, res_factory = Reservation):
         ret = super().reserve_book(user, book, date_from, date_to, res_factory)
         if not ret[0]:
             if ret[1] == 'user':
-                print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
-                      F'User does not exist.')
+                string = F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. User does not exist.'
             elif ret[1] == 'date':
-                print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
-                      F'Incorrect dates.')
+                string = F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. Incorrect dates.'
             elif ret[1] == 'book':
-                print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
-                      F'We do not have that book.')
+                string = F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. We do not have that book.'
             elif ret[1] == 'quantity':
-                print(F'We cannot reserve book {book} for {user} from {date_from} ' +
-                      F'to {date_to}. We do not have enough books.')
+                string = F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. We do not have enough books.'
         else:
-            print(F'Reservation {ret[1]} included.')
+            string = F'Reservation {ret[1]} included.'
+        self.printer.my_print(string)
         return ret[0]
 
     def check_reservation(self, user, book, date):
@@ -170,16 +173,18 @@ class Library(TemplateLibrary):
         str = 'exists'
         if not ret:
             str = 'does not exist'
-        print(F'Reservation for {user} of {book} on {date} {str}.')
+        string = F'Reservation for {user} of {book} on {date} {str}.'
+        self.printer.my_print(string)
         return ret
 
     def change_reservation(self, user, book, date, new_user):
         ret = super().change_reservation(user, book, date, new_user)
         if not ret[0]:
             if ret[1]=='irrelevant':
-                print(F'Reservation for {user} of {book} on {date} does not exist.')
+                string = F'Reservation for {user} of {book} on {date} does not exist.'
             if ret[1] == 'user':
-                print(F'Cannot change the reservation as {new_user} does not exist.')
+                string = F'Cannot change the reservation as {new_user} does not exist.'
         else:
-            print(F'Reservation for {user} of {book} on {date} changed to {new_user}.')
+            string = F'Reservation for {user} of {book} on {date} changed to {new_user}.'
+        self.printer.my_print(string)
         return ret[0]
