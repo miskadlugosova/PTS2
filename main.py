@@ -1,7 +1,10 @@
 from itertools import count
 
+class MyPrinter(object):
+    def my_printer(self, string):
+        print(string)
 
-class TemplateReservation:
+class TemplateReservation(object):
     _ids = count(0)
 
     def __init__(self, from_, to, book, for_):
@@ -33,8 +36,9 @@ class TemplateReservation:
 
 
 class Reservation(TemplateReservation):
-    def __init__(self, from_, to, book, for_):
+    def __init__(self, from_, to, book, for_, printer = MyPrinter):
         super().__init__(from_, to, book, for_)
+        self.printer = printer
         print(F'Created a reservation with id {self._id} of {self._book} ' +
               F'from {self._from} to {self._to} for {self._for}.')
 
@@ -107,7 +111,7 @@ class TemplateLibrary(object):
                     return (False, 'quantity')
         self._reservations += [desired_reservation]
         self._reservations.sort(key=lambda x: x._from)  # to lazy to make a getter
-        return (True, desired_reservation)
+        return (True, desired_reservation._id)
 
     def check_reservation(self, user, book, date):
         res = any([res.identify(date, book, user) for res in self._reservations])
@@ -125,8 +129,9 @@ class TemplateLibrary(object):
 
 
 class Library(TemplateLibrary):
-    def __init__(self):
+    def __init__(self, printer = MyPrinter):
         super().__init__()
+        self.printer = printer
         print(F'Library created.')
 
     def add_user(self, name):
@@ -157,7 +162,7 @@ class Library(TemplateLibrary):
                 print(F'We cannot reserve book {book} for {user} from {date_from} ' +
                       F'to {date_to}. We do not have enough books.')
         else:
-            print(F'Reservation {ret[1].__id} included.')
+            print(F'Reservation {ret[1]} included.')
         return ret[0]
 
     def check_reservation(self, user, book, date):
