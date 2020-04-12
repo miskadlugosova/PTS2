@@ -1,8 +1,15 @@
 from itertools import count
 
+
 class MyPrinter(object):
     def my_print(self, string):
         print(string)
+
+
+class NoPrint(object):
+    def my_print(self, string):
+        pass
+
 
 class TemplateReservation(object):
     _ids = count(0)
@@ -13,12 +20,12 @@ class TemplateReservation(object):
         self._to = to
         self._book = book
         self._for = for_
-        self._changes = 0  #probably unnecessary variable
+        self._changes = 0  # probably unnecessary variable
 
     def overlapping(self, other):
         return (self._book == other._book and (self._to >= other._from
-                and self._from <= other._to) or (other._to >= self._from
-                and other._from <= self._to))
+                                               and self._from <= other._to) or (other._to >= self._from
+                                                                                and other._from <= self._to))
 
     def includes(self, date):
         return (self._from <= date <= self._to)
@@ -37,9 +44,9 @@ class TemplateReservation(object):
 
 
 class Reservation(TemplateReservation):
-    def __init__(self, from_, to, book, for_, printer = MyPrinter):
+    def __init__(self, from_, to, book, for_, printer=MyPrinter):
         super().__init__(from_, to, book, for_)
-        self.printer = printer
+        self.printer = printer()
         string = F'Created a reservation with id {self._id} of {self._book} from {self._from} to {self._to} for {self._for}.'
         self.printer.my_print(string)
 
@@ -96,7 +103,7 @@ class TemplateLibrary(object):
     def add_book(self, name):
         self._books[name] = self._books.get(name, 0) + 1
 
-    def reserve_book(self, user, book, date_from, date_to, res_factory = Reservation):
+    def reserve_book(self, user, book, date_from, date_to, res_factory=Reservation):
         book_count = self._books.get(book, 0)
         if user not in self._users:
             return (False, 'user')
@@ -109,10 +116,13 @@ class TemplateLibrary(object):
                                  if desired_reservation.overlapping(res)] + [desired_reservation]
         # we check that if we add this reservation then for every reservation record that starts
         # between date_from and date_to no more than book_count books are reserved.
-        for from_ in [res._from for res in relevant_reservations]:
-            if desired_reservation.includes(from_):
-                if sum([rec.includes(from_) for rec in relevant_reservations]) > book_count:
-                    return (False, 'quantity')
+        #for from_ in [res._from for res in relevant_reservations]:
+         #   if desired_reservation.includes(from_):
+          #      if sum([rec.includes(from_) for rec in relevant_reservations]) > book_count:
+           #         return False
+        for res in relevant_reservations:
+            if sum([res._book == desired_reservation._book]) > book_count:
+                return (False, 'quantity')
         self._reservations += [desired_reservation]
         self._reservations.sort(key=lambda x: x._from)  # to lazy to make a getter
         return (True, desired_reservation._id)
@@ -133,7 +143,7 @@ class TemplateLibrary(object):
 
 
 class Library(TemplateLibrary):
-    def __init__(self, printer = MyPrinter):
+    def __init__(self, printer=MyPrinter):
         super().__init__()
         self.printer = printer
         string = F'Library created.'
@@ -153,7 +163,7 @@ class Library(TemplateLibrary):
         string = F'Book {name} added. We have {self._books[name]} coppies of the book.'
         self.printer.my_print(string)
 
-    def reserve_book(self, user, book, date_from, date_to, res_factory = Reservation):
+    def reserve_book(self, user, book, date_from, date_to, res_factory=Reservation):
         ret = super().reserve_book(user, book, date_from, date_to, res_factory)
         if not ret[0]:
             if ret[1] == 'user':
@@ -181,7 +191,7 @@ class Library(TemplateLibrary):
     def change_reservation(self, user, book, date, new_user):
         ret = super().change_reservation(user, book, date, new_user)
         if not ret[0]:
-            if ret[1]=='irrelevant':
+            if ret[1] == 'irrelevant':
                 string = F'Reservation for {user} of {book} on {date} does not exist.'
             if ret[1] == 'user':
                 string = F'Cannot change the reservation as {new_user} does not exist.'
