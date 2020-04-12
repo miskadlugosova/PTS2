@@ -2,8 +2,10 @@ from itertools import count
 
 
 class TemplateReservation:
+    _ids = count(0)
 
     def __init__(self, from_, to, book, for_):
+        self._id = next(self._ids)
         self._from = from_
         self._to = to
         self._book = book
@@ -29,18 +31,14 @@ class TemplateReservation:
     def change_for(self, for_):
         self._for = for_
 
-
 class Reservation(TemplateReservation):
-    _ids = count(0)
-
     def __init__(self, from_, to, book, for_):
-        super(Reservation, self).__init__(from_, to, book, for_)
-        self._id = next(Reservation._ids)
+        super().__init__(from_, to, book, for_)
         print(F'Created a reservation with id {self._id} of {self._book} ' +
               F'from {self._from} to {self._to} for {self._for}.')
 
     def overlapping(self, other):
-        ret = super(Reservation, self).overlapping(other)
+        ret = super().overlapping(other)
         str = 'do'
         if not ret:
             str = 'do not'
@@ -48,15 +46,15 @@ class Reservation(TemplateReservation):
         return ret
 
     def includes(self, date):
-        ret = super(Reservation, self).includes(date)
+        ret = super().includes(date)
         str = 'includes'
         if not ret:
             str = 'does not include'
         print(F'Reservation {self._id} {str} {date}')
         return ret;
-
+#!
     def identify(self, date, book, for_):
-        ret = super(Reservation, self).identify(date, book, for_)
+        ret = super().identify(date, book, for_)
         if book != self._book:
             print(F'Reservation {self._id} reserves {self._book} not {book}.')
         if for_ != self._for:
@@ -68,12 +66,11 @@ class Reservation(TemplateReservation):
         return ret
 
     def change_for(self, for_):
+        super().change_for(for_)
         print(F'Reservation {self._id} moved from {self._for} to {for_}')
-        super
 
 
 class TemplateLibrary(object):
-
     def __init__(self):
         self._users = set()
         self._books = {}  # maps name to count
@@ -123,26 +120,26 @@ class TemplateLibrary(object):
         relevant_reservations[0].change_for(new_user)
         return True
 
-
 class Library(TemplateLibrary):
     def __init__(self):
-        super(Library, self).__init__()
+        super().__init__()
         print(F'Library created.')
 
     def add_user(self, name):
-        res = super(Library, self).add_user(name)
-        if name in self._users:
+        res = super().add_user(name)
+        if not res:
             print(F'User not created, user with name {name} already exists.')
-        print(F'User {name} created.')
+        else:
+            print(F'User {name} created.')
         return res
 
     def add_book(self, name):
-        super(Library, self).add_book(name)
+        super().add_book(name)
         print(F'Book {name} added. We have {self._books[name]} coppies of the book.')
 
     def reserve_book(self, user, book, date_from, date_to):
-        res = super(Library, self).reserve_book(user, book, date_from, date_to)
-        if (res[0] == False):
+        res = super().reserve_book(user, book, date_from, date_to)
+        if not res[0]:
             if (res[1] == 'user'):
                 print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
                       F'User does not exist.')
@@ -155,24 +152,20 @@ class Library(TemplateLibrary):
             elif (res[1] == 'quantity'):
                 print(F'We cannot reserve book {book} for {user} from {date_from} ' +
                       F'to {date_to}. We do not have enough books.')
-            else:
-                print("Unpredicted problem")
-        elif (res[1] == True):
-            print(F'Reservation {res[1].__id} included.')
         else:
-            print("Unpredicted problem")
+            print(F'Reservation {res[1].__id} included.')
         return res[0]
 
     def check_reservation(self, user, book, date):
-        res = super(Library, self).check_reservation(user, book, date)
+        res = super().check_reservation(user, book, date)
         str = 'exists'
         if not res:
             str = 'does not exist'
         print(F'Reservation for {user} of {book} on {date} {str}.')
         return res
-
+#!
     def change_reservation(self, user, book, date, new_user):
-        res = super(Library, self).change_reservation(user, book, date, new_user)
+        res = super().change_reservation(user, book, date, new_user)
         relevant_reservations = [res for res in self._reservations
                                  if res.identify(date, book, user)]
         if not relevant_reservations:
@@ -182,9 +175,3 @@ class Library(TemplateLibrary):
         print(F'Reservation for {user} of {book} on {date} changed to {new_user}.')
         relevant_reservations[0].change_for(new_user)
         return res
-
-
-a = Library()
-b = Reservation(10, 12, "kniha", "mna")
-b.includes(9)
-b.includes(11)
