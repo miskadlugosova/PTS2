@@ -92,7 +92,7 @@ class TemplateLibrary(object):
     def add_book(self, name):
         self._books[name] = self._books.get(name, 0) + 1
 
-    def reserve_book(self, user, book, date_from, date_to):
+    def reserve_book(self, user, book, date_from, date_to, res_factory = Reservation):
         book_count = self._books.get(book, 0)
         if user not in self._users:
             return (False, 'user')
@@ -100,7 +100,7 @@ class TemplateLibrary(object):
             return (False, 'date')
         if book_count == 0:
             return (False, 'book')
-        desired_reservation = Reservation(date_from, date_to, book, user)
+        desired_reservation = res_factory(date_from, date_to, book, user)
         relevant_reservations = [res for res in self._reservations
                                  if desired_reservation.overlapping(res)] + [desired_reservation]
         # we check that if we add this reservation then for every reservation record that starts
@@ -146,8 +146,8 @@ class Library(TemplateLibrary):
         super().add_book(name)
         print(F'Book {name} added. We have {self._books[name]} coppies of the book.')
 
-    def reserve_book(self, user, book, date_from, date_to):
-        ret = super().reserve_book(user, book, date_from, date_to)
+    def reserve_book(self, user, book, date_from, date_to, res_factory = Reservation):
+        ret = super().reserve_book(user, book, date_from, date_to, res_factory)
         if not ret[0]:
             if ret[1] == 'user':
                 print(F'We cannot reserve book {book} for {user} from {date_from} to {date_to}. ' +
