@@ -43,7 +43,7 @@ class TestTemplateReservation(unittest.TestCase):
         self.assertEqual(self.reserve3.identify(1, 'Trja patraci', 'Katka'), (False, 'book'))
         self.assertEqual(self.reserve3.identify(4, 'Poirot', 'Katka'), (False, 'book'))
         self.assertEqual(self.reserve3.identify(2, 'Traja patraci', 'Adam'), (False, 'for'))
-        self.assertEqual(self.reserve1.identify(20, 'Traja patraci', 'Jano'), (True, 'ok'))
+        self.assertEqual(self.reserve1.identify(20, 'Traja patraci', 'Jano'), (True, 'ok'))  #change_for was successful
 
 if __name__ == '__main__':
     unittest.main()

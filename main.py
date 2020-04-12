@@ -16,8 +16,9 @@ class TemplateReservation(object):
         self._changes = 0  #probably unnecessary variable
 
     def overlapping(self, other):
-        return (self._book == other._book and self._to >= other._from
-                and self._from <= other._to)
+        return (self._book == other._book and (self._to >= other._from
+                and self._from <= other._to) or (other._to >= self._from
+                and other._from <= self._to))
 
     def includes(self, date):
         return (self._from <= date <= self._to)
@@ -56,7 +57,7 @@ class Reservation(TemplateReservation):
         str = 'includes'
         if not ret:
             str = 'does not include'
-        print(F'Reservation {self._id} {str} {date}')
+        string = F'Reservation {self._id} {str} {date}'
         self.printer.my_print(string)
         return ret
 
