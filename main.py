@@ -13,7 +13,7 @@ class TemplateReservation(object):
         self._to = to
         self._book = book
         self._for = for_
-        self._changes = 0
+        self._changes = 0  #probably unnecessary variable
 
     def overlapping(self, other):
         return (self._book == other._book and self._to >= other._from
@@ -70,7 +70,7 @@ class Reservation(TemplateReservation):
                       F'does not include {date}.')
         else:
             print(F'Reservation {self._id} is valid {for_} of {book} on {date}.')
-        return ret
+        return ret[0]
 
     def change_for(self, for_):
         super().change_for(for_)
@@ -182,4 +182,4 @@ class Library(TemplateLibrary):
                 print(F'Cannot change the reservation as {new_user} does not exist.')
         else:
             print(F'Reservation for {user} of {book} on {date} changed to {new_user}.')
-        return ret
+        return ret[0]
