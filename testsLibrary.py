@@ -97,10 +97,7 @@ class TestTemporaryLibrary_Change_To_Nonexisting_And_Existing_Check_Existing(uni
 class TestTemplateLibrary_Change_With_No_Relevant_Reservation_Check_Non_Existing_Reservation(unittest.TestCase):
     def setUp(self) -> None:
         self.library = TemplateLibrary()
-        self.library._users = set(['Miska', 'Adam', 'Jano', 'Katka'])
-        self.library._books['Traja patraci'] = 2
-        self.library._books['Poirot'] = 2
-        self.library._books['Sherlock'] = 1
+        #self.library._users = set(['Miska', 'Adam', 'Jano', 'Katka'])
         self.library._reservations = [Mock_overlapping(5, 10, 'Sherlock', 'Jano')] + [
             Mock_overlapping(1, 10, 'Traja patraci', 'Jano')] + [Mock_overlapping(7, 12, 'Traja patraci', 'Adam')] + [
                                          Mock_overlapping(11, 14, 'Traja patraci', 'Katka')]
