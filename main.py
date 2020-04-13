@@ -5,12 +5,6 @@ class MyPrinter(object):
     def my_print(self, string):
         print(string)
 
-
-#class NoPrint(object):
- #   def my_print(self, string):
-  #      pass
-
-
 class TemplateReservation(object):
     _ids = count(0)
 
