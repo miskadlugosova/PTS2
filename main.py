@@ -70,7 +70,7 @@ class Reservation(TemplateReservation):
             if ret[1] == 'date':
                 string = F'Reservation {self._id} is from {self._from} to {self._to} which does not include {date}.'
         else:
-            string = (F'Reservation {self._id} is valid {for_} of {book} on {date}.')
+            string = F'Reservation {self._id} is valid {for_} of {book} on {date}.'
         self.printer.my_print(string)
         return ret[0]
 
@@ -134,7 +134,7 @@ class TemplateLibrary(object):
 class Library(TemplateLibrary):
     def __init__(self, printer=MyPrinter):
         super().__init__()
-        self.printer = printer
+        self.printer = printer()
         string = F'Library created.'
         self.printer.my_print(string)
 
