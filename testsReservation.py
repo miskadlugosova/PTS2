@@ -29,7 +29,7 @@ class Test_Template_Reservation(unittest.TestCase):
     def test_e_identify(self):
         self.assertEqual(self.reserve3.identify(5, 'Traja patraci', 'Katka'), (True, 'ok'))
         self.assertEqual(self.reserve3.identify(7, 'Traja patraci', 'Katka'), (False, 'date'))
-        self.assertEqual(self.reserve3.identify(1, 'Trja patraci', 'Katka'), (False, 'book'))
+        self.assertEqual(self.reserve3.identify(1, 'Trja patraci', 'Katka'), (False, 'book'))    #preklep
         self.assertEqual(self.reserve3.identify(4, 'Poirot', 'Katka'), (False, 'book'))
         self.assertEqual(self.reserve3.identify(2, 'Traja patraci', 'Adam'), (False, 'for'))
 
@@ -37,3 +37,6 @@ class Test_Template_Reservation(unittest.TestCase):
         self.assertEqual(self.reserve1.identify(20, 'Traja patraci', 'Miska'), (True, 'ok'))
         self.assertEqual(self.reserve1.change_for('Jano'), None)
         self.assertEqual(self.reserve1.identify(20, 'Traja patraci', 'Jano'), (True, 'ok'))
+
+if __name__ == '__main__':
+    unittest.main()
