@@ -6,9 +6,9 @@ class MyPrinter(object):
         print(string)
 
 
-class NoPrint(object):
-    def my_print(self, string):
-        pass
+#class NoPrint(object):
+ #   def my_print(self, string):
+  #      pass
 
 
 class TemplateReservation(object):
@@ -23,9 +23,7 @@ class TemplateReservation(object):
         self._changes = 0  # probably unnecessary variable
 
     def overlapping(self, other):
-        return (self._book == other._book and (self._to >= other._from
-                                               and self._from <= other._to) or (other._to >= self._from
-                                                                                and other._from <= self._to))
+        return (self._book == other._book and self._to >= other._from and self._from <= other._to)
 
     def includes(self, date):
         return (self._from <= date <= self._to)
@@ -72,7 +70,7 @@ class Reservation(TemplateReservation):
         ret = super().identify(date, book, for_)
         if not ret[0]:
             if ret[1] == 'book':
-                sring = F'Reservation {self._id} reserves {self._book} not {book}.'
+                string = F'Reservation {self._id} reserves {self._book} not {book}.'
             if ret[1] == 'for':
                 string = F'Reservation {self._id} is for {self._for} not {for_}.'
             if ret[1] == 'date':
@@ -116,13 +114,10 @@ class TemplateLibrary(object):
                                  if desired_reservation.overlapping(res)] + [desired_reservation]
         # we check that if we add this reservation then for every reservation record that starts
         # between date_from and date_to no more than book_count books are reserved.
-        #for from_ in [res._from for res in relevant_reservations]:
-         #   if desired_reservation.includes(from_):
-          #      if sum([rec.includes(from_) for rec in relevant_reservations]) > book_count:
-           #         return False
-        for res in relevant_reservations:
-            if sum([res._book == desired_reservation._book]) > book_count:
-                return (False, 'quantity')
+        for from_ in [res._from for res in relevant_reservations]:
+            if desired_reservation.includes(from_):
+                if sum([rec.includes(from_) for rec in relevant_reservations]) > book_count:
+                    return (False, 'quantity')
         self._reservations += [desired_reservation]
         self._reservations.sort(key=lambda x: x._from)  # to lazy to make a getter
         return (True, desired_reservation._id)
