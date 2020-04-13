@@ -24,31 +24,31 @@ class TestTemplateReservation(unittest.TestCase):
         cls.reserve3 = ReservationTest(1, 6, 'Traja patraci', 'Katka')
         cls.reserve4 = ReservationTest(10, 15, 'Sherlock Holmes', 'Katka')
 
-    def test_init_id(self):
-        self.assertEqual(self.reserve1._id, 6)
-        self.assertEqual(self.reserve2._id, 7)
-        self.assertEqual(self.reserve3._id, 8)
-        self.assertEqual(self.reserve4._id, 9)
+    def test_a_init_id(self):
+        self.assertEqual(self.reserve1._id, 9)
+        self.assertEqual(self.reserve2._id, 10)
+        self.assertEqual(self.reserve3._id, 11)
+        self.assertEqual(self.reserve4._id, 12)
 
-    def test_overlapping(self):
+    def test_b_overlapping(self):
         self.assertEqual(self.reserve1.overlapping(self.reserve2), True)
         self.assertEqual(self.reserve2.overlapping(self.reserve1), True)
         self.assertEqual(self.reserve1.overlapping(self.reserve3), False)
         self.assertEqual(self.reserve3.overlapping(self.reserve1), False)
-        self.assertEqual(self.reserve1.overlapping(self.reserve4), True)
-        self.assertEqual(self.reserve4.overlapping(self.reserve1), True)
+        self.assertEqual(self.reserve1.overlapping(self.reserve4), False)
+        self.assertEqual(self.reserve4.overlapping(self.reserve1), False)
 
-    def test_includes(self):
+    def test_c_includes(self):
         self.assertEqual(self.reserve1.includes(4), False)
         self.assertEqual(self.reserve1.includes(10), True)
         self.assertEqual(self.reserve1.includes(15), True)
         self.assertEqual(self.reserve1.includes(24), True)
         self.assertEqual(self.reserve1.includes(25), False)
 
-    def test_change_for(self):
+    def test_d_change_for(self):
         self.assertEqual(self.reserve1.change_for('Jano'), None)
 
-    def test_identify(self):
+    def test_e_identify(self):
         self.assertEqual(self.reserve3.identify(5, 'Traja patraci', 'Katka'), (True, 'ok'))
         self.assertEqual(self.reserve3.identify(7, 'Traja patraci', 'Katka'), (False, 'date'))
         self.assertEqual(self.reserve3.identify(1, 'Trja patraci', 'Katka'), (False, 'book'))
@@ -73,18 +73,16 @@ class TestTemplateLibrary(unittest.TestCase):
         cls.library.add_book('Sherlock')
         cls.library.add_book('Poirot')
 
-    def test_add_user(self):
-        print('first lib')
+    def test_a_add_user(self):
         self.assertEqual(self.library.add_user('Katka'), True)
         self.assertEqual(self.library.add_user('Adam'), False)
         self.assertEqual(self.library.add_user('Katka'), False)
 
-    def test_add_book(self):
+    def test_b_add_book(self):
         self.assertEqual(self.library.add_book('Traja patraci'), None)
         self.assertEqual(self.library.add_book('Poirot'), None)
 
-    def test_reserve_book(self):
-        print('begin')
+    def test_c_reserve_book(self):
         self.assertEqual(self.library.reserve_book('Jozo', 'Sherlock', 14, 28), (False, 'user'))
         self.assertEqual(self.library.reserve_book('Adam', 'Sherlock', 20, 19), (False, 'date'))
         self.assertEqual(self.library.reserve_book('Adam', 'Tigri tim', 2, 16), (False, 'book'))
@@ -97,11 +95,8 @@ class TestTemplateLibrary(unittest.TestCase):
         self.assertEqual(self.library.reserve_book('Katka', 'Traja patraci', 9, 15), (False, 'quantity'))
         self.assertEqual(self.library.reserve_book('Katka', 'Traja patraci', 11, 14), (True, 7))
         self.assertEqual(self.library.reserve_book('Miska', 'Traja patraci', 12, 17), (False, 'quantity'))
-        for a in range(len(self.library._reservations)):
-            print(self.library._reservations[a])
-        print('end')
 
-    def test_change_reservation(self):
+    def test_d_change_reservation(self):
         self.assertEqual(self.library.change_reservation('Miska', 'Sherlock', 3, 'Jozo'), (False, 'user'))
         self.assertEqual(self.library.change_reservation('Miska', 'Sherlock', 10, 'Adam'),
                          (False, 'irrelevant'))  # date
@@ -110,7 +105,7 @@ class TestTemplateLibrary(unittest.TestCase):
         self.assertEqual(self.library.change_reservation('Adam', 'Sherlock', 7, 'Jano'), (False, 'irrelevant'))  # user
         self.assertEqual(self.library.change_reservation('Miska', 'Sherlock', 4, 'Adam'), (True, 'ok'))
 
-    def test_check_reservation(self):
+    def test_e_check_reservation(self):
         self.assertEqual(self.library.check_reservation('Jano', 'Sherlock', 9), True)
         self.assertEqual(self.library.check_reservation('Katka', 'Sherlock', 20), False)  # non-existing
         self.assertEqual(self.library.check_reservation('Jano', 'Sherlock', 12), False)  # date
