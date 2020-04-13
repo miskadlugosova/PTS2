@@ -12,23 +12,20 @@ from mock import patch
       #  c._for = for_
        # assert c.includes(10) is True
 
-class ReservationTest(TemplateReservation):
-    pass
-
-
 class TestTemplateReservation(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.reserve1 = ReservationTest(10, 24, 'Traja patraci', 'Miska')
-        cls.reserve2 = ReservationTest(24, 26, 'Traja patraci', 'Adam')
-        cls.reserve3 = ReservationTest(1, 6, 'Traja patraci', 'Katka')
-        cls.reserve4 = ReservationTest(10, 15, 'Sherlock Holmes', 'Katka')
+        cls.reserve1 = TemplateReservation(10, 24, 'Traja patraci', 'Miska')
+        cls.reserve2 = TemplateReservation(24, 26, 'Traja patraci', 'Adam')
+        cls.reserve3 = TemplateReservation(1, 6, 'Traja patraci', 'Katka')
+        cls.reserve4 = TemplateReservation(10, 15, 'Sherlock Holmes', 'Katka')
 
     def test_a_init_id(self):
-        self.assertEqual(self.reserve1._id, 9)
-        self.assertEqual(self.reserve2._id, 10)
-        self.assertEqual(self.reserve3._id, 11)
-        self.assertEqual(self.reserve4._id, 12)
+        i = self.reserve1._id
+        self.assertEqual(self.reserve1._id, i)
+        self.assertEqual(self.reserve2._id, i+1)
+        self.assertEqual(self.reserve3._id, i+2)
+        self.assertEqual(self.reserve4._id, i+3)
 
     def test_b_overlapping(self):
         self.assertEqual(self.reserve1.overlapping(self.reserve2), True)
@@ -55,10 +52,6 @@ class TestTemplateReservation(unittest.TestCase):
         self.assertEqual(self.reserve3.identify(4, 'Poirot', 'Katka'), (False, 'book'))
         self.assertEqual(self.reserve3.identify(2, 'Traja patraci', 'Adam'), (False, 'for'))
         self.assertEqual(self.reserve1.identify(20, 'Traja patraci', 'Jano'), (True, 'ok'))  # change_for was successful
-
-
-class LibraryTest(TemplateLibrary):
-    pass
 
 
 class TestTemplateLibrary(unittest.TestCase):
