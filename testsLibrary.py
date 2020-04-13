@@ -2,7 +2,6 @@ import unittest
 from main import TemplateLibrary
 from itertools import count
 
-
 class MockReserve(object):
     _ids = count(0)
     def __init__(self, from_, to, book, for_):
