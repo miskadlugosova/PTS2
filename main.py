@@ -34,6 +34,7 @@ class TemplateReservation(object):
     def change_for(self, for_):
         self._for = for_
 
+#don't need to have variable string
 
 class Reservation(TemplateReservation):
     def __init__(self, from_, to, book, for_, printer=MyPrinter):
@@ -116,6 +117,7 @@ class TemplateLibrary(object):
         self._reservations.sort(key=lambda x: x._from)  # to lazy to make a getter
         return (True, desired_reservation._id)
 
+#unnecessary variable
     def check_reservation(self, user, book, date):
         res = any([res.identify(date, book, user) for res in self._reservations])
         return res
@@ -152,6 +154,8 @@ class Library(TemplateLibrary):
         string = F'Book {name} added. We have {self._books[name]} coppies of the book.'
         self.printer.my_print(string)
 
+#maybe true branch before false (there are more in false, so the true one "disappers")
+#elif or if? but be consistent
     def reserve_book(self, user, book, date_from, date_to, res_factory=Reservation):
         ret = super().reserve_book(user, book, date_from, date_to, res_factory)
         if not ret[0]:

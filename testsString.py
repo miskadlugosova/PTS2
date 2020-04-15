@@ -5,6 +5,7 @@ class RememberNotPrint(object):
     def my_print(self, string):
         self.string = string
 
+#None in each test is unnecessarz
 class TestReservation_Includes_Change_for_identify(unittest.TestCase):
     def setUp(self) -> None:
         self.res1 = Reservation(12, 15, 'Traja patraci', 'Miska', RememberNotPrint)

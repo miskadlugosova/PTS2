@@ -8,6 +8,7 @@ class Test_Template_Reservation(unittest.TestCase):
         self.reserve3 = TemplateReservation(1, 6, 'Traja patraci', 'Katka')
         self.reserve4 = TemplateReservation(10, 15, 'Sherlock Holmes', 'Katka')
 
+#maybe test also from1 < from2 < to1 < to2 and from2 < from1 <to2 <to1
     def test_overlapping(self):
         self.assertEqual(self.reserve1.overlapping(self.reserve2), True)  # last day
         self.assertEqual(self.reserve2.overlapping(self.reserve1), True)  # first day
@@ -23,6 +24,7 @@ class Test_Template_Reservation(unittest.TestCase):
         self.assertEqual(self.reserve1.includes(24), True)  # last day
         self.assertEqual(self.reserve1.includes(25), False)  # not, after
 
+    #you should check if the TemplateReservation._for changes properly: self.assertEqual(self.res_1._for, 'Helen') - after that you don 't have to test test_identify_change_identify
     def test_change_for(self):
         self.assertEqual(self.reserve1.change_for('Jano'), None)
 
