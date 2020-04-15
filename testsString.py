@@ -5,9 +5,8 @@ class RememberNotPrint(object):
     def my_print(self, string):
         self.string = string
 
-#None in each test is unnecessarz
 class TestReservation_Includes_Change_for_identify(unittest.TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         self.res1 = Reservation(12, 15, 'Traja patraci', 'Miska', RememberNotPrint)
 
     def test_includes(self):
@@ -31,7 +30,7 @@ class TestReservation_Includes_Change_for_identify(unittest.TestCase):
         self.assertEqual(self.res1.printer.string, F'Reservation {self.res1._id} is valid Miska of Traja patraci on 15.')
 
 class TestLibrary_Add_User_Init(unittest.TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         self.library = Library(RememberNotPrint)
         self.library._users = set(['Miska', 'Adam'])
 
