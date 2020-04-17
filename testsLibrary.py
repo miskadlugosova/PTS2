@@ -30,12 +30,10 @@ class Mock_identify(MockReserve):
         return True
 
 
-class Mock_overlapping(MockReserve):
+class Mock_overlapping_includes(MockReserve):
     def overlapping(self, other):
         return True
 
-
-class Mock_overlapping_includes(Mock_overlapping):
     def includes(self, date):
         return True
 
